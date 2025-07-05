@@ -89,11 +89,9 @@ def classify():
     if not is_image(image):
         return jsonify({"error": "Invalid file type. Only image files are allowed."}), 400
     
-    # preprocess image
     img = Image.open(image)
     img_array = preprocess_image(img)
 
-    # prediction
     predictions = classify_model.predict(img_array)
     predicted_class = CLASS_NAMES[np.argmax(predictions)]
     confidence = float(np.max(predictions))
