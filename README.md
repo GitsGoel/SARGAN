@@ -28,18 +28,37 @@ This adversarial setup produces realistic and structurally consistent outputs, g
 
 📙 TensorFlow
 
-📚 Models Explored (Colorization)
-Model Variant	Summary
-Simple GAN with L1 Loss	Baseline model with pixel-level accuracy.
-GAN with L1 + SSIM	Improved structural clarity using SSIM loss.
-GAN with MSE + L1 + SSIM	Added MSE for better convergence; slower training.
-GAN without Upsampling Decoder	Simpler decoder; poor detail retention.
-U-Net GAN with Custom Loss	Strong structural preservation using skip connections.
-U-Net GAN using Only CNNs	Compact model; lower visual realism.
-U-Net GAN with Patch Discriminator ✅	Final model used. Balanced texture, structure, and color realism.
+🧠 Models Explored
+Several GAN architectures were experimented with to improve color fidelity, structure retention, and training stability:
 
-🎯 Why this model?
-The final U-Net GAN + Patch Discriminator architecture provided the best trade-off between color accuracy and structure preservation. It was specifically tuned to handle SAR's unique spatial characteristics, outperforming other variants in interpretability and generalization.
+Model Variant	Description	Result Summary
+1. Simple GAN with L1 Loss	Basic encoder-decoder GAN with only L1 reconstruction loss.	Good structure retention, but dull colors.
+2. GAN with L1 + SSIM	Combined pixel-level and structural similarity metrics.	Improved color consistency, better edge sharpness.
+3. GAN with MSE + L1 + SSIM	Added MSE to stabilize training.	Slightly improved color accuracy, but slower convergence.
+4. GAN without Upsampling Decoder	Decoder replaced with basic dense layers.	Very poor image generation; failed to reconstruct fine details.
+5. U-Net GAN with Custom Loss	U-Net generator with SSIM + L1 + perceptual loss.	Very strong performance in edge clarity and tonal contrast.
+6. U-Net GAN using only CNNs	U-Net with only convolutional blocks, no residuals or attention.	Good detail, but lacked contrast in fine textures.
+7. U-Net GAN with Patch Discriminator ✅	Final model. U-Net generator + PatchGAN discriminator + composite loss.	Best in both detail and color realism. Stable training.
+
+✅ Final Architecture: U-Net GAN + Patch Discriminator
+🏗️ Generator: U-Net
+Encoder-decoder structure with skip connections.
+
+Designed to retain both global shape and local texture.
+
+🔍 Discriminator: PatchGAN
+Operates on N×N image patches rather than entire images.
+
+Helps enforce local realism in generated images.
+
+🔥 Custom Loss Function
+Combines the strengths of multiple losses:
+
+L1 Loss: Penalizes large pixel-wise differences.
+
+SSIM (Structural Similarity): Ensures perceptual quality.
+
+Perceptual Loss (VGG) (optional): Captures semantic similarity.
 
 📂 Getting Started
 bash
