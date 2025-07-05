@@ -6,22 +6,8 @@ Synthetic Aperture Radar (SAR) image enhancement and terrain classification are 
 
 Generative Adversarial Networks (GANs) play a crucial role in SAR image colorization, transforming grayscale SAR images into visually interpretable colorized representations. Since SAR images inherently lack natural color information, GANs learn complex mappings between SAR data and corresponding optical imagery, effectively generating realistic colorized outputs. The generator synthesizes colorized images, while the discriminator ensures realism by distinguishing between real and generated images. This approach enhances the interpretability of SAR data, aiding applications in terrain analysis, environmental monitoring, and disaster management by bridging the gap between SAR and optical imagery.
 
-## ⚙️ Tech Stack
 
-### 1. 🌐 Client
-
--   ⚛️ React
--   🔷 Typescript
--   📨 Axios
--   🎨 Tailwind CSS
--   🎊 TS Particles
-
-### 2. ⚗️ Server
-
--   🐍 Python
--   ⚗️ Flask
-
-### 3. 📦 Model
+### Model
 
 -   🐍 Python
 -   🔢 Numpy
@@ -30,7 +16,7 @@ Generative Adversarial Networks (GANs) play a crucial role in SAR image coloriza
 -   ⭕ Keras
 -   📙 Tensorflow
 
-## 🚶🏻‍♂️ Getting started
+##  Getting started
 
 ```bash
 git clone https://github.com/naman22a/sar
@@ -63,42 +49,9 @@ data
     └───sar
 ```
 
-Create and activate the virtualenv inside model folder
-
-```bash
-pip install virtualenv
-virtualenv env
-source ./env/Scripts/activate
-pip install -r requirements.txt
-```
-
 We have 2 models in model folder, train them from there respective files
 
 -   src/GAN-colorization.ipynb
 -   src/classification.ipynb
 
 Copy `models/GAN-colorization.keras` and `models/classification.keras` from `model` folder to `server/models` folder
-
-### 2. Setup the Server
-
-```bash
-# Create and activate the virtualenv inside server folder
-pip install virtualenv
-virtualenv venv
-source ./venv/Scripts/activate
-pip install -r requirements.txt
-
-# Copy enviroment variables
-cp .env.example .env
-
-# Run the server
-python app.py
-```
-
-### 3. Setup the Client
-
-```bash
-cp .env.example .env
-yarn install
-yarn dev
-```
