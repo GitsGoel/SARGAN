@@ -1,85 +1,72 @@
 # 📡 SAR Image Enhancement and Terrain Classification Methods
-
+_Deep learning that turns grayscale radar into vivid, actionable maps_
 ![SAR](./assets/SAR.png)
 
 Synthetic Aperture Radar (SAR) image enhancement and terrain classification are essential for accurate remote sensing analysis. Enhancement techniques, such as speckle noise reduction, histogram equalization, and deep learning-based super-resolution, improve image clarity and feature visibility.
 
 For terrain classification, Convolutional Neural Networks (CNNs) are commonly used to segment and categorize land cover types. When combined with enhancement pipelines, these techniques enable precise mapping for real-world applications in agriculture, disaster response, and environmental monitoring.
 
-🎨 SAR Image Colorization with GANs
-Generative Adversarial Networks (GANs) play a crucial role in SAR image colorization, transforming grayscale SAR images into visually interpretable RGB representations. Since SAR images inherently lack natural color information, GANs are trained to learn mappings between SAR and optical image domains.
+## 🚀 Overview
+Synthetic Aperture Radar (SAR) is priceless for all‑weather, day‑night Earth observation—but its greyscale intensity images can be tough to interpret. **SARGAN** enhances, colorizes, and classifies SAR data so you see the story hiding in the static.
 
-The Generator creates plausible colorized images.
+1. **Enhancement** → Speckle denoising, histogram equalization, super‑resolution  
+2. **Colorization** → U‑Net + PatchGAN paints SAR in realistic RGB  
+3. **Terrain Classification** → CNN segments land‑cover for agriculture, disaster relief, urban‑growth & more  
 
-The Discriminator differentiates between real and generated optical images.
+---
 
-This adversarial setup produces realistic and structurally consistent outputs, greatly improving interpretability of SAR data in fields like terrain analysis, disaster mapping, and change detection.
+## 🛠️ Tech Stack
+| Layer | Tools |
+|-------|-------|
+| **Language** | Python 🐍 |
+| **Numerics** | NumPy 🔢 |
+| **Visualization** | Matplotlib 📊 & OpenCV 👁️ |
+| **Deep Learning** | TensorFlow / Keras⭕ |
 
-⚙️ Technologies Used
-🐍 Python
+---
 
-🔢 NumPy
+## 🧠 Model Zoo
+| Model Variant | What We Tried | One‑Line Verdict |
+|---------------|---------------|------------------|
+| Simple GAN + **L1** | Vanilla encoder‑decoder | ✅ Crisp edges, ❌ washed‑out colors |
+| **L1 + SSIM** | Adds structural loss | Better tones & sharper edges |
+| **MSE + L1 + SSIM** | Stabilizes training | Marginal color boost, slower |
+| GAN _without_ upsampling | Dense decoder only | 🚨 Total fail on fine detail |
+| **U‑Net** + custom loss | SSIM + L1 + perceptual | 💎 Superb edges & contrast |
+| U‑Net (conv‑only) | No residual/attention | Good detail, low micro‑contrast |
+| **U‑Net + PatchGAN** (🥇 **Final**) | Local realism discriminator | Best mix of color & detail; rock‑solid training |
 
-📊 Matplotlib
+---
 
-👁️ OpenCV
+## 🏗️ Final Architecture
 
-⭕ Keras
+- **Generator** — U‑Net with skip connections for global context **plus** local texture  
+- **Discriminator** — **PatchGAN**: judges realism on N×N patches for ultra‑sharp results  
+- **Custom Loss**  
+  - `L1` (pixel fidelity)  
+  - **SSIM** (perceptual structure)  
+  - *Optional* VGG perceptual loss (semantic similarity)  
 
-📙 TensorFlow
+---
 
-🧠 Models Explored
-Several GAN architectures were experimented with to improve color fidelity, structure retention, and training stability:
+## 📂 Getting Started
 
-Model Variant	Description	Result Summary
-1. Simple GAN with L1 Loss	Basic encoder-decoder GAN with only L1 reconstruction loss.	Good structure retention, but dull colors.
-2. GAN with L1 + SSIM	Combined pixel-level and structural similarity metrics.	Improved color consistency, better edge sharpness.
-3. GAN with MSE + L1 + SSIM	Added MSE to stabilize training.	Slightly improved color accuracy, but slower convergence.
-4. GAN without Upsampling Decoder	Decoder replaced with basic dense layers.	Very poor image generation; failed to reconstruct fine details.
-5. U-Net GAN with Custom Loss	U-Net generator with SSIM + L1 + perceptual loss.	Very strong performance in edge clarity and tonal contrast.
-6. U-Net GAN using only CNNs	U-Net with only convolutional blocks, no residuals or attention.	Good detail, but lacked contrast in fine textures.
-7. U-Net GAN with Patch Discriminator ✅	Final model. U-Net generator + PatchGAN discriminator + composite loss.	Best in both detail and color realism. Stable training.
-
-✅ Final Architecture: U-Net GAN + Patch Discriminator
-🏗️ Generator: U-Net
-Encoder-decoder structure with skip connections.
-
-Designed to retain both global shape and local texture.
-
-🔍 Discriminator: PatchGAN
-Operates on N×N image patches rather than entire images.
-
-Helps enforce local realism in generated images.
-
-🔥 Custom Loss Function
-Combines the strengths of multiple losses:
-
-L1 Loss: Penalizes large pixel-wise differences.
-
-SSIM (Structural Similarity): Ensures perceptual quality.
-
-Perceptual Loss (VGG) (optional): Captures semantic similarity.
-
-📂 Getting Started
-bash
-Copy
-Edit
+```bash
 git clone https://github.com/GitsGoel/SARGAN
-
 cd SARGAN
-🗂️ Dataset Preparation
-Download the datasets from Kaggle:
+```
 
-SAR Image Colorization Dataset
+## 🗂️ Dataset
 
-Sentinel-1/2 Image Pairs for Terrain Classification
+Grab both datasets from [Kaggle](https://www.kaggle.com):
 
-Directory Structure
+- **SAR Image Colorization Dataset**
+- **Sentinel‑1/2 Pairs for Terrain Classification**
+
+### 📁 Directory Structure
 Inside the model folder, create the following structure:
 
-bash
-Copy
-Edit
+```bash
 data
 ├───archive
 │   └───v_2
@@ -93,57 +80,38 @@ data
 └───train
     ├───opt
     └───sar
-🧪 Model Training
-Navigate to the src folder to train both models:
 
-1. Colorization Model (GAN-based)
-bash
-Copy
-Edit
-Open and run: src/GAN-colorization.ipynb
-This will train the U-Net GAN with Patch Discriminator on SAR-optical pairs for realistic colorization.
+```
+## 🧪 Training
 
-2. Terrain Classification Model
-bash
-Copy
-Edit
-Open and run: src/classification.ipynb
-This model classifies colorized SAR images into terrain categories like agriculture, grassland, barren land, and urban.
+| 📓 Notebook | 🧠 Purpose           | ▶️ Command        |
+|-------------|----------------------|------------------|
+| `src/GAN-colorization.ipynb` | Train SAR colorization GAN | Open & run |
+| `src/classification.ipynb`   | Train terrain classification CNN | Open & run |
 
-💡 Both notebooks are modular and can be adapted to new data formats or architectures easily.
+> 💡 *Both notebooks are modular—easily adaptable to new datasets or architectures.*
 
-✅ Deploy Models for Inference
-After training, copy the trained weights to the server folder:
+---
 
-bash
-Copy
-Edit
-models/GAN-colorization.keras      ➝   server/models/GAN-colorization.keras  
-models/classification.keras        ➝   server/models/classification.keras
-🧩 Use Cases
-Land Cover Mapping
+## 🚀 Deploy for Inference
 
-Disaster Assessment
+```bash
+# After training:
+cp models/GAN-colorization.keras   server/models/
+cp models/classification.keras     server/models/
+```
 
-Agricultural Monitoring
+## 🧩 Use Cases
+- Land Cover Mapping
 
-Urban Growth Analysis
+- Disaster Assessment
 
-Environmental Surveillance
+- Agricultural Monitoring
 
-👨‍💻 Contributors
-Gitansh Goel
-Manik Chauhan 
+- Urban Growth Analysis
 
-📜 License
-This project is released under the MIT License.
+- Environmental Surveillance
 
-Let me know if you'd like:
-
-requirements.txt
-
-Docker setup
-
-REST API deployment documentation
-
-I can generate those next.
+## 👨‍💻 Contributors
+- Gitansh Goel
+- Manik Chauhan 
